@@ -5,11 +5,11 @@
   "author": "Benoît Gelineau <bgelineau.dev@gmail.com> (https://www.benoitgelineau.com)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bgelineau/boursorama-finance-nodejs.git"
+    "url": "https://github.com/benoitgelineau/boursorama-finance.git"
   },
-  "homepage": "https://github.com/bgelineau/boursorama-finance-nodejs/#readme",
+  "homepage": "https://github.com/benoitgelineau/boursorama-finance#readme",
   "bugs": {
-    "url": "https://github.com/bgelineau/boursorama-finance-nodejs/issues"
+    "url": "https://github.com/benoitgelineau/boursorama-finance/issues"
   },
   "license": "MIT",
   "keywords": [
