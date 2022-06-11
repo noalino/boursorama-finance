@@ -1,3 +1,5 @@
+import getQuotes from './getQuotes';
+import search from './search';
+
 export * from './types';
-export { default as getQuotes } from './getQuotes';
-export { default as search } from './search';
+export { getQuotes, search };
