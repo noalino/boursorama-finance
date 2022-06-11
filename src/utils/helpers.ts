@@ -1,5 +1,6 @@
 import { API_URL, USER_AGENTS } from './constants';
 
+import type { GetQuotesUrlArgs, Period, RawPeriod } from '..';
 import type { Cheerio, Element } from 'cheerio';
 
 export const randomUserAgent = () => randomChoice(USER_AGENTS);
@@ -28,4 +29,33 @@ export function getSearchUrl(searchValue: string, page = 1): string {
   return `${API_URL}/recherche/_instruments/${searchValue}${
     page === 1 ? '' : `?page=${page}`
   }`;
+}
+
+export function convertPeriod(period: Period): RawPeriod {
+  switch (period) {
+    case 'daily':
+      return 1;
+    case 'weekly':
+      return 7;
+    case 'monthly':
+      return 30;
+    case 'yearly':
+      return 365;
+  }
+}
+
+export function getQuotesUrl({
+  symbol,
+  startDate = '',
+  duration = '3M',
+  period = 1,
+  page = 1,
+}: GetQuotesUrlArgs): string {
+  return `${API_URL}/_formulaire-periode/${
+    page > 1 ? `page-${page}` : ''
+  }?symbol=${symbol}&historic_search[startDate]=${startDate}&historic_search[duration]=${duration}&historic_search[period]=${period}`;
+}
+
+export function getMaxPages(view: Cheerio<Element>): number {
+  return parseInt(view.find('span[class=c-pagination__content]').last().text());
 }
