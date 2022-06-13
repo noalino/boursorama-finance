@@ -24,6 +24,7 @@ export type GetQuotesArgs = {
   startDate?: string;
   duration?: Duration;
   period?: Period;
+  concatenate?: boolean;
 };
 
 export type GetQuotesQuote = {

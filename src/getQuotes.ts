@@ -24,6 +24,7 @@ const getPrice = (value: Cheerio<Element>): number =>
 export default async function getQuotes({
   symbols,
   period = 'daily',
+  concatenate = false,
   ...props
 }: GetQuotesArgs): Promise<GetQuotesResponse | undefined> {
   const getCheerio = async (symbol: SymbolType, page: number) => {
@@ -90,6 +91,37 @@ export default async function getQuotes({
     asset.values = removeDuplicateObjects<GetQuotesQuote>(asset.values, 'date');
     return asset;
   });
+
+  // List assets from a single date history
+  if (concatenate) {
+    // Take the asset with the oldest history
+    const ref = assets.reduce((a, b) => {
+      if (!a?.values?.length || b.values.length > a.values.length) {
+        return b;
+      }
+      return a;
+    }, {} as GetQuotesAsset);
+
+    const list = ref.values.map(({ date, last }) => {
+      const otherAssets = assets
+        .filter(({ symbol }) => symbol !== ref.symbol)
+        .reduce(
+          (obj, { symbol, values }) => ({
+            ...obj,
+            [symbol]: values.find((value) => value.date === date)?.last || null,
+          }),
+          {}
+        );
+
+      return {
+        date,
+        [ref.symbol]: last,
+        ...otherAssets,
+      };
+    });
+
+    return list;
+  }
 
   return assets;
 }
