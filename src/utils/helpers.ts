@@ -59,3 +59,20 @@ export function getQuotesUrl({
 export function getMaxPages(view: Cheerio<Element>): number {
   return parseInt(view.find('span[class=c-pagination__content]').last().text());
 }
+
+export function removeDuplicateObjects<T extends Record<string, unknown>>(
+  list: T[],
+  filterKey: string
+): T[] {
+  const uniqueValues: unknown[] = [];
+  return list.filter((e) => {
+    const isDuplicate = uniqueValues.includes(e[filterKey]);
+
+    if (!isDuplicate) {
+      uniqueValues.push(e[filterKey]);
+      return true;
+    }
+
+    return false;
+  });
+}

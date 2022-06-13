@@ -6,6 +6,7 @@ import {
   getQuotesUrl,
   getMaxPages,
   getTextAndTrim,
+  removeDuplicateObjects,
 } from './utils/helpers';
 
 import type {
@@ -82,5 +83,13 @@ export default async function getQuotes({
     return await getAsset(symbol, [...values, ...quotes], ++page);
   };
 
-  return await Promise.all(symbols.map((symbol) => getAsset(symbol)));
+  const assets = await Promise.all(symbols.map((symbol) => getAsset(symbol)));
+
+  // Remove duplicated dates if any
+  assets.forEach((asset) => {
+    asset.values = removeDuplicateObjects<GetQuotesQuote>(asset.values, 'date');
+    return asset;
+  });
+
+  return assets;
 }
