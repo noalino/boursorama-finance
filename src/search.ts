@@ -1,30 +1,38 @@
 import { load } from 'cheerio';
 
 import fetch from './utils/fetch';
-import { getSearchUrl, getPrice, getTextAndTrim } from './utils/helpers';
+import {
+  getMaxPages,
+  getPrice,
+  getSearchUrl,
+  getTextAndTrim,
+} from './utils/helpers';
 
 import type { SearchResponse } from '.';
+import type { CheerioAPI } from 'cheerio';
 
 export default async function search(
   input: string,
   page = 1
 ): Promise<SearchResponse | undefined> {
-  let html = '';
+  const getCheerio = async (input: string, page: number) => {
+    const res = await fetch(getSearchUrl(input, page));
+    const html = await res.text();
+
+    return load(html, null, false);
+  };
+
+  let $: CheerioAPI;
 
   try {
-    const res = await fetch(getSearchUrl(input, page));
-    html = await res.text();
+    $ = await getCheerio(input, page);
   } catch (err) {
     throw new Error(`Request cannot be satisfied: ${err}`);
   }
 
-  const $ = load(html, null, false);
-
   const view = $('[data-result-search]');
 
-  const maxPages = parseInt(
-    view.find('span[class=c-pagination__content]').last().text()
-  );
+  const maxPages = getMaxPages(view);
 
   const values = view
     .find('tbody[class=c-table__body]')
