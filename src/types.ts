@@ -15,11 +15,11 @@ export type SearchResponse = {
 };
 
 /**
- * Get quotes
+ * Historical
  */
 export type SymbolType = string;
 
-export type GetQuotesArgs = {
+export type HistoricalArgs = {
   symbols: SymbolType[];
   startDate?: string;
   duration?: Duration;
@@ -27,18 +27,18 @@ export type GetQuotesArgs = {
   concatenate?: boolean;
 };
 
-export type GetQuotesQuote = {
+export type HistoricalQuote = {
   date: string;
   last: number;
 };
 
-export type GetQuotesAsset = {
+export type HistoricalAsset = {
   symbol: string;
-  values: GetQuotesQuote[];
+  values: HistoricalQuote[];
 };
 
 // TODO
-export type GetQuotesResponse = GetQuotesAsset[] | any;
+export type HistoricalResponse = HistoricalAsset[] | any;
 
 export type Duration =
   | '1M'
@@ -60,7 +60,7 @@ export type Period = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 export type RawPeriod = 1 | 7 | 30 | 365;
 
-export type GetQuotesUrlArgs = {
+export type GetHistoricalUrlArgs = {
   symbol: string;
   startDate?: string;
   duration?: Duration;

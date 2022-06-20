@@ -3,17 +3,17 @@ import { load } from 'cheerio';
 import fetch from './utils/fetch';
 import {
   convertPeriod,
-  getQuotesUrl,
+  getHistoricalUrl,
   getMaxPages,
   getTextAndTrim,
   removeDuplicateObjects,
 } from './utils/helpers';
 
 import type {
-  GetQuotesArgs,
-  GetQuotesAsset,
-  GetQuotesQuote,
-  GetQuotesResponse,
+  HistoricalArgs,
+  HistoricalAsset,
+  HistoricalQuote,
+  HistoricalResponse,
   SymbolType,
 } from '.';
 import type { Cheerio, CheerioAPI, Element } from 'cheerio';
@@ -21,15 +21,20 @@ import type { Cheerio, CheerioAPI, Element } from 'cheerio';
 const getPrice = (value: Cheerio<Element>): number =>
   parseFloat(getTextAndTrim(value).replace(/\s/g, ''));
 
-export default async function getQuotes({
+export default async function historical({
   symbols,
   period = 'daily',
   concatenate = false,
   ...props
-}: GetQuotesArgs): Promise<GetQuotesResponse | undefined> {
+}: HistoricalArgs): Promise<HistoricalResponse | undefined> {
   const getCheerio = async (symbol: SymbolType, page: number) => {
     const res = await fetch(
-      getQuotesUrl({ symbol, page, period: convertPeriod(period), ...props })
+      getHistoricalUrl({
+        symbol,
+        page,
+        period: convertPeriod(period),
+        ...props,
+      })
     );
     const html = await res.text();
 
@@ -40,9 +45,9 @@ export default async function getQuotes({
 
   const getAsset = async (
     symbol: SymbolType,
-    values: GetQuotesQuote[] = [],
+    values: HistoricalQuote[] = [],
     page = 1
-  ): Promise<GetQuotesAsset> => {
+  ): Promise<HistoricalAsset> => {
     if (page < 1 || page > maxPages) {
       return {
         symbol,
@@ -88,7 +93,10 @@ export default async function getQuotes({
 
   // Remove duplicated dates if any
   assets.forEach((asset) => {
-    asset.values = removeDuplicateObjects<GetQuotesQuote>(asset.values, 'date');
+    asset.values = removeDuplicateObjects<HistoricalQuote>(
+      asset.values,
+      'date'
+    );
     return asset;
   });
 
@@ -100,7 +108,7 @@ export default async function getQuotes({
         return b;
       }
       return a;
-    }, {} as GetQuotesAsset);
+    }, {} as HistoricalAsset);
 
     const list = ref.values.map(({ date, last }) => {
       const otherAssets = assets

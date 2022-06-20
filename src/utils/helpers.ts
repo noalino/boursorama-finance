@@ -1,6 +1,6 @@
 import { API_URL, USER_AGENTS } from './constants';
 
-import type { GetQuotesUrlArgs, Period, RawPeriod } from '..';
+import type { GetHistoricalUrlArgs, Period, RawPeriod } from '..';
 import type { Cheerio, Element } from 'cheerio';
 
 export const randomUserAgent = () => randomChoice(USER_AGENTS);
@@ -44,13 +44,13 @@ export function convertPeriod(period: Period): RawPeriod {
   }
 }
 
-export function getQuotesUrl({
+export function getHistoricalUrl({
   symbol,
   startDate = '',
   duration = '3M',
   period = 1,
   page = 1,
-}: GetQuotesUrlArgs): string {
+}: GetHistoricalUrlArgs): string {
   return `${API_URL}/_formulaire-periode/${
     page > 1 ? `page-${page}` : ''
   }?symbol=${symbol}&historic_search[startDate]=${startDate}&historic_search[duration]=${duration}&historic_search[period]=${period}`;

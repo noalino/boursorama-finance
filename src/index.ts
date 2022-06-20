@@ -1,5 +1,5 @@
-import getQuotes from './getQuotes';
+import historical from './historical';
 import search from './search';
 
 export * from './types';
-export { getQuotes, search };
+export { historical, search };
