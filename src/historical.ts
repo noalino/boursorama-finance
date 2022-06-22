@@ -21,12 +21,10 @@ import type { Cheerio, CheerioAPI, Element } from 'cheerio';
 const getPrice = (value: Cheerio<Element>): number =>
   parseFloat(getTextAndTrim(value).replace(/\s/g, ''));
 
-export default async function historical({
-  symbols,
-  period = 'daily',
-  concatenate = false,
-  ...props
-}: HistoricalArgs): Promise<HistoricalResponse | undefined> {
+export default async function historical(
+  symbols: HistoricalArgs['symbols'],
+  { period = 'daily', concatenate = false, ...props }: HistoricalArgs['options']
+): Promise<HistoricalResponse | undefined> {
   const getCheerio = async (symbol: SymbolType, page: number) => {
     const res = await fetch(
       getHistoricalUrl({
@@ -41,54 +39,52 @@ export default async function historical({
     return load(html, null, false);
   };
 
-  let maxPages: number;
-
-  const getAsset = async (
-    symbol: SymbolType,
-    values: HistoricalQuote[] = [],
-    page = 1
-  ): Promise<HistoricalAsset> => {
-    if (page < 1 || page > maxPages) {
-      return {
-        symbol,
-        values,
-      };
-    }
-
+  const getAsset = async (symbol: SymbolType): Promise<HistoricalAsset> => {
     let $: CheerioAPI;
+    let page = 1;
+    let maxPages = 1;
+    let values: HistoricalQuote[] = [];
 
-    try {
-      $ = await getCheerio(symbol, page);
-    } catch (err) {
-      return {
-        symbol,
-        values: [],
-      };
-    }
-
-    const view = $('[data-period-history-view]');
-
-    if (!maxPages) {
-      maxPages = getMaxPages(view);
-    }
-
-    const quotes = view
-      .find('tbody[class=c-table__body]')
-      .first()
-      .find('tr[class=c-table__row]')
-      .map((_, row) => {
-        const cells = $('td', row);
-
+    while (maxPages && page <= maxPages) {
+      try {
+        $ = await getCheerio(symbol, page);
+      } catch (err) {
         return {
-          date: getTextAndTrim($(cells.get(0))),
-          last: getPrice($(cells.get(1))),
+          symbol,
+          values: [],
         };
-      })
-      .toArray();
+      }
 
-    return await getAsset(symbol, [...values, ...quotes], ++page);
+      const view = $('[data-period-history-view]');
+
+      if (!maxPages) {
+        maxPages = getMaxPages(view);
+        console.log('maxPages', maxPages);
+      }
+
+      const quotes = view
+        .find('tbody[class=c-table__body]')
+        .first()
+        .find('tr[class=c-table__row]')
+        .map((_, row) => {
+          const cells = $('td', row);
+
+          return {
+            date: getTextAndTrim($(cells.get(0))),
+            last: getPrice($(cells.get(1))),
+          };
+        })
+        .toArray();
+
+      values = [...values, ...quotes];
+      page++;
+    }
+
+    return {
+      symbol,
+      values,
+    };
   };
-
   const assets = await Promise.all(symbols.map((symbol) => getAsset(symbol)));
 
   // Remove duplicated dates if any

@@ -21,10 +21,12 @@ export type SymbolType = string;
 
 export type HistoricalArgs = {
   symbols: SymbolType[];
-  startDate?: string;
-  duration?: Duration;
-  period?: Period;
-  concatenate?: boolean;
+  options: {
+    startDate?: string;
+    duration?: Duration;
+    period?: Period;
+    concatenate?: boolean;
+  };
 };
 
 export type HistoricalQuote = {
