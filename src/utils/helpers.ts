@@ -47,7 +47,7 @@ export function convertPeriod(period: Period): RawPeriod {
 export function getHistoricalUrl({
   symbol,
   startDate = '',
-  duration = '3M',
+  duration = '1M',
   period = 1,
   page = 1,
 }: GetHistoricalUrlArgs): string {
