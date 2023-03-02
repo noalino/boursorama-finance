@@ -59,7 +59,6 @@ export default async function historical(
 
       if (!maxPages) {
         maxPages = getMaxPages(view);
-        console.log('maxPages', maxPages);
       }
 
       const quotes = view
