@@ -5,7 +5,7 @@
   "author": "Noalino",
   "repository": {
     "type": "git",
-    "url": "https://github.com/noalino/boursorama-finance.git"
+    "url": "git+https://github.com/noalino/boursorama-finance.git"
   },
   "homepage": "https://github.com/noalino/boursorama-finance#readme",
   "bugs": {
