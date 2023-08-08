@@ -1,15 +1,15 @@
 {
   "name": "boursorama-finance",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A wrapper to get financial quotes from the Boursorama website.",
-  "author": "Benoît Gelineau <bgelineau.dev@gmail.com> (https://www.benoitgelineau.com)",
+  "author": "Noalino",
   "repository": {
     "type": "git",
-    "url": "https://github.com/benoitgelineau/boursorama-finance.git"
+    "url": "https://github.com/noalino/boursorama-finance.git"
   },
-  "homepage": "https://github.com/benoitgelineau/boursorama-finance#readme",
+  "homepage": "https://github.com/noalino/boursorama-finance#readme",
   "bugs": {
-    "url": "https://github.com/benoitgelineau/boursorama-finance/issues"
+    "url": "https://github.com/noalino/boursorama-finance/issues"
   },
   "license": "MIT",
   "keywords": [
